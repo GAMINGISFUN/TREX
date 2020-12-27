@@ -1,93 +1,83 @@
-var speed, weight, bullet, wall, thickness;
+var helicopterIMG, helicopterSprite, packageSprite,packageIMG;
+var packageBody,ground
+const Engine = Matter.Engine;
+const World = Matter.World;
+const Bodies = Matter.Bodies;
+const Body = Matter.Body;
+
+function preload()
+{
+	helicopterIMG=loadImage("helicopter.png")
+	packageIMG=loadImage("package.png")
+}
+
+function setup() {
+	createCanvas(800, 700);
+	rectMode(CENTER);
+	
+
+	packageSprite=createSprite(width/2, 80, 10,10);
+	packageSprite.addImage(packageIMG)
+	packageSprite.scale=0.2
+
+	helicopterSprite=createSprite(width/2, 200, 10,10);
+	helicopterSprite.addImage(helicopterIMG)
+	helicopterSprite.scale=0.6
+
+	groundSprite=createSprite(width/2, height-35, width,10);
+	groundSprite.shapeColor=color(255)
+
+	bottom = createSprite(width/2, 650, 200, 20);
+	bottom.shapeColor = "red";
+
+	side1 = createSprite(300, 610, 20, 100);
+	side1.shapeColor = "red";
+
+	side2 = createSprite(500, 610, 20, 100);
+	side2.shapeColor = "red";
 
 
-function setup() { 
-  createCanvas(1600,400);
+	engine = Engine.create();
+	world = engine.world;
 
-   speed=random(223,321);
-   weight=random(30,52); 
-  bullet = createSprite(50, 200, 50, 10  );
-   bullet.velocityX=speed;
-   bullet.shapeColor="white"
-    wall=createSprite(1200, 200, thickness, height/2);
-    thickness=random(22,83)
+	packageBody = Bodies.circle(width/2 , 200 , 5 , { isStatic:true});
+	World.add(world, packageBody);
+
+	
+	
+
+	//Create a Ground
+	ground = Bodies.rectangle(width/2, 650, width, 10 , {isStatic:true} );
+ 	World.add(world, ground);
+
+
+	Engine.run(engine);
+
+	
   
-  
-  
-  }
-
-
-
+}
 
 
 function draw() {
-  background(0,0,0);  
+  rectMode(CENTER);
+  background(0);
+  packageSprite.x= packageBody.position.x 
+  packageSprite.y= packageBody.position.y 
 
-/*if(wall.x-car.x<(car.width+wall.width)/2)
-{
-  car.velocityX=0;
-  var deform=0.5*weight*speed*speed/22509;
-  if(deform>180)
-  {car.shapeColor=color(250,0,0);}
-
-  if(deform<180 && deform>100)
-  {car.shapeColor=color(230,230,0);} 
-
-  if(deform<100)
-  {car.shapeColor=color(0,255,0);}*/
-
-
-if(hc(bullet,wall))
-{
-
-bullet.velocityX=0;
-var d=0.5 * weight * speed* speed/(thickness *thickness *thickness)
-
-if(d>10)
-{
-
-wall.shapeColor=color(255,0,0);
-
-}
-
-if(d<10)
-{
-
-wall.shapeColor=color(0,255,0);
-
-}
-
-
-}
-
-
-
-
-
-
-
+  packageSprite.collide(bottom);
+  packageSprite.collide(side1);
+  packageSprite.collide(side2);
   drawSprites();
+ 
 }
 
+function keyPressed() {
+ if (keyCode === DOWN_ARROW) {
+	// Look at the hints in the document and understand how to make the package body fall only on
 
-function hc(Ibullet,Iwall){
+	Matter.Body.setStatic(packageBody, false);
 
-bulletRightEdge=Ibullet.x +Ibullet.width;
-wallLeftEdge=Iwall.x;
-
-
-if(bulletRightEdge>=wallLeftEdge){
-
-return true 
-
+	
+    
+  }
 }
-
-return false;
-
-
-}
-
-
-
-
-
