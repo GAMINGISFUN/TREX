@@ -1,83 +1,61 @@
-var helicopterIMG, helicopterSprite, packageSprite,packageIMG;
-var packageBody,ground
-const Engine = Matter.Engine;
-const World = Matter.World;
-const Bodies = Matter.Bodies;
-const Body = Matter.Body;
 
-function preload()
-{
-	helicopterIMG=loadImage("helicopter.png")
-	packageIMG=loadImage("package.png")
+ const Engine = Matter.Engine;
+ const World = Matter.World;
+ const Bodies = Matter.Bodies;
+ const Body = Matter.Body;
+
+ var paper,ground,side0,side1,side2;
+
+function preload(){
+	
 }
 
 function setup() {
-	createCanvas(800, 700);
-	rectMode(CENTER);
+	 createCanvas(800, 700);
+  
 	
+	 engine = Engine.create();
+	 world = engine.world;
 
-	packageSprite=createSprite(width/2, 80, 10,10);
-	packageSprite.addImage(packageIMG)
-	packageSprite.scale=0.2
+	 paper = new Paper(100, 600, 10);
 
-	helicopterSprite=createSprite(width/2, 200, 10,10);
-	helicopterSprite.addImage(helicopterIMG)
-	helicopterSprite.scale=0.6
-
-	groundSprite=createSprite(width/2, height-35, width,10);
-	groundSprite.shapeColor=color(255)
-
-	bottom = createSprite(width/2, 650, 200, 20);
-	bottom.shapeColor = "red";
-
-	side1 = createSprite(300, 610, 20, 100);
-	side1.shapeColor = "red";
-
-	side2 = createSprite(500, 610, 20, 100);
-	side2.shapeColor = "red";
+     ground = new Ground(400, 680, 800, 20);
+  
+	 side0 = new Dustbin(550, 620, 20, 100);
+     side1 = new Dustbin(635, 660, 150, 20);
+     side2 = new Dustbin(720, 620, 20, 100);
 
 
-	engine = Engine.create();
-	world = engine.world;
-
-	packageBody = Bodies.circle(width/2 , 200 , 5 , { isStatic:true});
-	World.add(world, packageBody);
-
-	
-	
-
-	//Create a Ground
-	ground = Bodies.rectangle(width/2, 650, width, 10 , {isStatic:true} );
- 	World.add(world, ground);
-
-
-	Engine.run(engine);
-
-	
+     Engine.run(engine);
   
 }
 
 
 function draw() {
+
   rectMode(CENTER);
   background(0);
-  packageSprite.x= packageBody.position.x 
-  packageSprite.y= packageBody.position.y 
 
-  packageSprite.collide(bottom);
-  packageSprite.collide(side1);
-  packageSprite.collide(side2);
+  Engine.update(engine);
+
+  paper.display();
+
+  ground.display();
+
+  side0.display();
+  side1.display();
+  side2.display();
+
   drawSprites();
  
 }
 
-function keyPressed() {
- if (keyCode === DOWN_ARROW) {
-	// Look at the hints in the document and understand how to make the package body fall only on
+function keyPressed(){
+	if(keyCode === UP_ARROW)  {
+	   Matter.Body.applyForce(paper.body, paper.body.position, 
+		   {x:15, y: -15})
+	}
 
-	Matter.Body.setStatic(packageBody, false);
-
-	
-    
   }
-}
+
+
